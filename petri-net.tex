@@ -1,0 +1,30 @@
+\documentclass{article}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,snakes,backgrounds}
+
+\begin{document}
+\tikzstyle{place}=[circle,draw=blue!50,fill=blue!20,inner sep=0pt,minimum size=6mm]
+\tikzstyle{transition}=[rectangle,draw=black!50,fill=black!20,thick,inner sep=0pt,minimum size=4mm]
+\tikzstyle{pre}=[<-,shorten <=1pt,>=stealth',semithick]
+\tikzstyle{post}=[->,shorten >=1pt,>=stealth',semithick]
+\begin{tikzpicture}[bend angle=45]
+  \tikzstyle{every label}=[red]
+  \node[place] (waiting) {};
+  \node[place] (critical) [below of=waiting] {};
+  \node[place] (semaphore) [below of=critical,label=above:$s\le3$] {};
+  \node[transition] (leave critical) [right of=critical] {}
+  edge [pre] (critical)
+  edge [post,bend right] node[auto,swap] {2} (waiting)
+  edge [pre, bend left] (semaphore);
+  \node[transition] (enter critical) [left of=critical] {}
+  edge  [post] (critical)
+  edge [pre, bend left] (waiting)
+  edge [post, bend right] (semaphore);
+
+  \begin{pgfonlayer}{background}
+    \filldraw [fill=black!30,draw=red]
+      (semaphore.south -| enter critical.west) rectangle (waiting.north -| leave critical.east);
+  \end{pgfonlayer}
+\end{tikzpicture}
+\end{document}
